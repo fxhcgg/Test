@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<body>
+<button id="btn">开始测试方向传感器</button>
+<pre id="log"></pre>
+<script>
+  const log = document.getElementById('log');
+  document.getElementById('btn').onclick = async () => {
+    log.textContent = '点击了按钮，开始请求权限...\n';
+
+    if (typeof DeviceOrientationEvent === 'undefined') {
+      log.textContent += 'DeviceOrientationEvent 不存在\n';
+      return;
+    }
+
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      try {
+        const res = await DeviceOrientationEvent.requestPermission();
+        log.textContent += 'requestPermission 返回: ' + res + '\n';
+      } catch (e) {
+        log.textContent += 'requestPermission 抛错: ' + e + '\n';
+      }
+    } else {
+      log.textContent += '没有 requestPermission，直接监听 deviceorientation\n';
+    }
+
+    window.addEventListener('deviceorientation', (e) => {
+      log.textContent =
+        'alpha: ' + e.alpha +
+        '\nbeta: ' + e.beta +
+        '\ngamma: ' + e.gamma +
+        '\nwebkitCompassHeading: ' + e.webkitCompassHeading +
+        '\nabsolute: ' + e.absolute;
+    }, true);
+  };
+</script>
+</body>
+</html>
